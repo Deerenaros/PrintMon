@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing.Printing;
-using System.Collections;
 using System.Linq;
 using System.Management;
 using System.Threading.Tasks;
@@ -10,24 +8,35 @@ namespace PrintMon
 {
     class Program
     {
+        static readonly HashSet<long> discoveredJobs = new HashSet<long>();
+
+        static readonly string STARTING_STATUS = "Spooling";
+
+        static long CalcJobHash(ManagementObject job)
+        {
+            return $"{job.Properties["Name"]} {job.Properties["StartTime"]}".GetHashCode();
+        }
+
         static IEnumerable<(string name, string doc, long pages)> FetchSpoolingJobs()
         {
 
             string searchQuery = "SELECT * FROM Win32_PrintJob";
             ManagementObjectSearcher searchPrintJobs = new ManagementObjectSearcher(searchQuery);
             ManagementObjectCollection prntJobCollection = searchPrintJobs.Get();
-            return prntJobCollection.Cast<ManagementObject>()
-                .Where((j) =>
+            foreach (ManagementObject job in prntJobCollection) {
+                if(!discoveredJobs.Contains(CalcJobHash(job)) &&
+                   Convert.ToString(job.Properties["JobStatus"]?.Value).Contains(STARTING_STATUS))
                 {
-                    return Convert.ToString(j.Properties["JobStatus"]?.Value) == "Spooling";
-                }).Select((j) =>
-                {
-                    return (
-                        j.Properties["Name"].Value.ToString(),
-                        j.Properties["Document"].Value.ToString(),
-                        Int64.Parse(j.Properties["PagesPrinted"].Value.ToString())
+                    discoveredJobs.Add(CalcJobHash(job));
+                    yield return (
+                        job.Properties["Name"].Value.ToString(),
+                        job.Properties["Document"].Value.ToString(),
+                        Int64.Parse(job.Properties["TotalPages"].Value.ToString())
                     );
-                });
+                } else {
+                    discoveredJobs.Remove(CalcJobHash(job));
+                }
+            }
         }
 
         static void Main(string[] _)
@@ -40,9 +49,8 @@ namespace PrintMon
                     {
                         FetchSpoolingJobs().ToList().ForEach((t) =>
                         {
-                            Console.WriteLine($"{t.name} of {t.doc} with {t.pages} pages");
+                            Console.WriteLine($"{t.name} of '{t.doc}' with {t.pages} pages");
                         });
-
                         await Task.Delay(100);
                     }
                 }).Wait();
