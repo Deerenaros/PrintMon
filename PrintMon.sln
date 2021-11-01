@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30611.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintMon", "PrintMon.csproj", "{44B7E28F-58D5-4497-9822-3A02E806648A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{44B7E28F-58D5-4497-9822-3A02E806648A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44B7E28F-58D5-4497-9822-3A02E806648A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44B7E28F-58D5-4497-9822-3A02E806648A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44B7E28F-58D5-4497-9822-3A02E806648A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0CDB9904-8F30-4E97-9D61-28B407A1A1DD}
+	EndGlobalSection
+EndGlobal
